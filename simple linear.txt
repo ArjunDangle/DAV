@@ -1,0 +1,30 @@
+Multiple Linear Regression:
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+import seaborn as sns
+
+data = sns.load_dataset("tips")
+
+x = data[["total_bill","size"]]
+x = sm.add_constant(x)
+y = data["tip"]
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+model = sm.OLS(y_train, x_train).fit()
+print(model.summary())
+
+y_pred = model.predict(x_test)
+rse = (np.sqrt(model.mse_resid)/data["tip"].mean()) * 100
+print(rse)
+
+plt.scatter(x["total_bill"],y)
+plt.title("Total Bill vs Tip")
+
+plt.scatter(x["size"],y)
+plt.title("Size vs Tip")
+
+plt.boxplot(data[["total_bill","size"]])
